@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import chalk from 'chalk';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { XMLParser } from 'fast-xml-parser';
 import axios from 'axios';
 import { github, nuget, pdfsharp } from './downloaders';
@@ -57,6 +57,7 @@ async function main({ baseDirectory, output, projectFilePath, failOnMissingLicen
 	core.debug(`Project file json: ${JSON.stringify(projectFileJson)}`);
 	const packages = projectFileJson.packages.package;
 	core.debug(`Packages: ${JSON.stringify(packages)}`);
+	// biome-ignore lint/suspicious/noExplicitAny: We don't know the type of the packages, so we have to use any here.
 	const parsedPackages = packages.map((p: any) => {
 		return { id: p['@_id'], version: correctVersion(p['@_version']) } as Package;
 	});

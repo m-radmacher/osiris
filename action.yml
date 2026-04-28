@@ -11,13 +11,13 @@ inputs:
   fail:
     description: 'Fail if a license is not found'
     required: false
-    default: false
+    default: 'false'
   ignore:
     description: 'Comma separated list of packages to ignore (make sure to use lowercase)'
     required: false
     default: ''
 runs:
-  using: 'node16'
+  using: 'node24'
   main: 'dist/index.js'
 branding:
   color: "green"
