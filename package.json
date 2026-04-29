@@ -8,15 +8,15 @@
     "lint": "biome ci src/",
     "lint:fix": "biome lint --write src/",
     "build": "tsc",
-    "package": "ncc build --source-map",
+    "package": "esbuild src/index.ts --bundle --platform=node --target=node24 --format=cjs --minify --outfile=dist/index.js --loader:.json=json",
     "clean": "rimraf dist/ lib/",
-    "release": "pnpm run clean && pnpm run build && pnpm run package",
+    "release": "pnpm run clean && pnpm run package",
     "dev": "tsx watch src/index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.13",
     "@types/node": "^25.6.0",
-    "@vercel/ncc": "^0.34.0",
+    "esbuild": "^0.28.0",
     "rimraf": "^6.1.3",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
