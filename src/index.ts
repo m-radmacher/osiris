@@ -71,12 +71,20 @@ async function main({ baseDirectory, output, projectFilePath, failOnMissingLicen
 			console.log(chalk.hex('#11aa11')(`Ignoring ${p.id}`));
 			continue;
 		}
-		const nugetApiUrl = `https://api.nuget.org/v3-flatcontainer/${p.id.toLowerCase()}/${
-			p.version
-		}/${p.id.toLowerCase()}.nuspec`;
+		const nugetApiUrl = `https://api.nuget.org/v3-flatcontainer/${p.id.toLowerCase()}/${p.version
+			}/${p.id.toLowerCase()}.nuspec`;
 		core.debug(`NuGet API URL: ${nugetApiUrl}`);
-		const response = await axios.get(nugetApiUrl);
-		const json = parser.parse(response.data);
+		const response = await fetch(nugetApiUrl);
+		if (!response.ok) {
+			console.log(chalk.hex('#ff0000')(`Failed to fetch license information for ${p.id} ${p.version} from NuGet API`));
+			if (failOnMissingLicense) {
+				core.setFailed(`Failed to fetch license information for ${p.id} ${p.version} from NuGet API`);
+				process.exit(core.ExitCode.Failure);
+			} else {
+				continue;
+			}
+		}
+		const json = parser.parse(await response.text());
 		core.debug(`NuGet API response: ${JSON.stringify(json)}`);
 		const licenseInformation: LicenseInformation = {
 			package: p,
